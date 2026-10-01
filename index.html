@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ceuta decide · escucha ciudadana</title>
+<meta name="description" content="Consulta ciudadana anónima sobre cómo hemos vivido estos meses en Ceuta y lo que necesita cada barrio. Unos 7 minutos. Los resultados se publican aquí.">
+<meta name="theme-color" content="#f7f3eb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1720" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="¿Y tú cómo has pasado estos dos meses?">
+<meta property="og:description" content="Consulta ciudadana anónima de Ceuta. Sin nombre ni teléfono. Unos 7 minutos.">
+<meta property="og:image" content="/img/compartir.jpg">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/img/icono-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/img/icono-180.png">
+<link rel="preload" href="/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/archivo-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/estilos.css">
+<script type="module" src="/app.js"></script>
+</head>
+<body>
+<a class="saltar" href="#principal">Saltar al contenido</a>
+<div class="filo"></div>
+
+<header class="cabecera">
+  <div class="env">
+    <a class="marca" href="#inicio" aria-label="Ceuta decide, inicio">
+      <img class="claro" src="/img/marca.webp" alt="Ceuta decide · escucha ciudadana" width="540" height="96">
+      <img class="oscuro" src="/img/marca-oscuro.webp" alt="" width="540" height="95">
+    </a>
+    <span class="hueco"></span>
+    <a class="enlace-cab" href="#resultados">Resultados</a>
+    <a class="btn chico" href="#consulta" data-empezar>Participar</a>
+  </div>
+</header>
+
+<main id="principal">
+
+<!-- ============================ INICIO ============================ -->
+<section class="vista" id="vista-inicio" data-vista="inicio">
+  <div class="env">
+    <div class="portada">
+      <span class="burbuja b1" aria-hidden="true"></span>
+      <div>
+        <span class="pastilla" id="estado-consulta">Consulta ciudadana abierta</span>
+        <h1>¿Y tú cómo has pasado <em>estos dos meses?</em></h1>
+        <p class="entradilla">Contesta tú, que vives aquí. Sin nombre, sin teléfono, sin correo. Lo que salga se publica entero.</p>
+        <form class="tarjeta" id="arranque" novalidate>
+          <label for="palabra">Empieza por una palabra</label>
+          <div class="campo">
+            <input id="palabra" name="palabra" type="text" maxlength="24" autocomplete="off" enterkeyhint="go"
+                   placeholder="Estos dos meses, en una palabra">
+            <button class="btn" type="submit">Seguir</button>
+          </div>
+          <p class="aviso"><span data-n-preguntas>33</span> preguntas · unos 7 minutos · anónima</p>
+        </form>
+      </div>
+      <div class="foto" role="img" aria-label="Vecinos de Ceuta conversando en el paseo marítimo"></div>
+    </div>
+
+    <ul class="garantias" aria-label="Lo que no te pedimos">
+      <li><strong>No te pedimos nombre, teléfono ni correo.</strong><span>Ni ningún dato que permita saber quién eres.</span></li>
+      <li><strong>No guardamos tu IP ni usamos cookies.</strong><span>Tampoco hay analítica ni píxeles de redes sociales.</span></li>
+      <li><strong>Se publica todo, agrupado.</strong><span>Ningún dato se enseña si lo comparten menos de 15 personas.</span></li>
+    </ul>
+
+    <section class="franja">
+      <div class="cuenta">
+        <strong id="f-titular">Tu respuesta se suma a la de tus vecinos</strong>
+        <span id="f-linea">Objetivo: 2.000 vecinos de Ceuta</span>
+        <div class="barra" id="f-barra" hidden><i></i></div>
+      </div>
+      <a class="btn" href="#consulta" data-empezar>Contestar ahora</a>
+    </section>
+
+    <section class="cierre" id="comparte">
+      <h2>Cuanta más gente conteste, menos se puede discutir el resultado</h2>
+      <p>Pásalo por WhatsApp a tu grupo del barrio. Ese es el canal que mueve las cosas aquí.</p>
+      <div class="compartir">
+        <span class="enlace" data-enlace>—</span>
+        <button class="btn fantasma" type="button" data-copiar>Copiar enlace</button>
+        <a class="btn fantasma" data-wa href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- ============================ CONSULTA ============================ -->
+<section class="vista" id="vista-consulta" data-vista="consulta" hidden>
+  <div class="env estrecho">
+    <div class="progreso" aria-hidden="true"><i id="progreso"></i></div>
+    <p class="paso-de" id="paso-de"></p>
+    <form id="formulario" novalidate>
+      <div id="paso"></div>
+      <div class="trampa" aria-hidden="true">
+        <label>No rellenes este campo <input type="text" name="web" id="web" tabindex="-1" autocomplete="off"></label>
+      </div>
+      <p class="error-general" id="error-general" role="alert" hidden></p>
+      <div class="navegacion">
+        <button class="btn secundario" type="button" id="atras">Atrás</button>
+        <button class="btn" type="submit" id="siguiente">Siguiente</button>
+      </div>
+    </form>
+    <p class="nota-borrador">Lo que contestas se guarda solo en este móvil u ordenador hasta que lo envías, por si tienes que dejarlo a medias.</p>
+  </div>
+</section>
+
+<!-- ============================ GRACIAS ============================ -->
+<section class="vista" id="vista-gracias" data-vista="gracias" hidden>
+  <div class="env estrecho">
+    <div class="gracias">
+      <span class="pastilla verde">Respuesta enviada</span>
+      <h1>Gracias. Ya cuentas.</h1>
+      <p class="entradilla">Tu respuesta se ha guardado sin ningún dato tuyo. Los resultados se publican en esta misma web.</p>
+      <div class="acciones">
+        <a class="btn" data-wa href="#" target="_blank" rel="noopener">Pásalo por WhatsApp</a>
+        <a class="btn secundario" href="#resultados">Ver cómo va</a>
+      </div>
+      <p class="aviso" id="canal-wrap" hidden>¿Quieres enterarte de los resultados y de las reuniones de barrio? <a id="canal" href="#" target="_blank" rel="noopener">Sigue el canal de WhatsApp</a>. Es aparte de la consulta: nadie ve tu número y no se une a tus respuestas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RESULTADOS ============================ -->
+<section class="vista" id="vista-resultados" data-vista="resultados" hidden>
+  <div class="env">
+    <div class="cabeza-res">
+      <h1>Resultados</h1>
+      <p class="entradilla" id="res-entradilla">Cargando…</p>
+    </div>
+    <div id="res"></div>
+  </div>
+</section>
+
+<!-- ============================ MÉTODO ============================ -->
+<section class="vista" id="vista-metodo" data-vista="metodo" hidden>
+  <div class="env estrecho texto-largo">
+    <h1>Cómo funciona y qué hacemos con tus respuestas</h1>
+
+    <h2>Qué es</h2>
+    <p>Ceuta decide es una consulta ciudadana abierta. La contesta quien quiere, así que no es una encuesta por muestreo como las del CIS. Lo que la hace defendible es que el método y los datos agregados son públicos y cualquiera puede revisarlos.</p>
+
+    <h2>Qué datos guardamos</h2>
+    <ul>
+      <li>Las respuestas a las preguntas cerradas, la hora redondeada a la hora en punto y cuánto tardaste en contestar.</li>
+      <li>Los textos libres, en una tabla aparte y sin nada que los una al resto de tus respuestas. Antes de guardarlos se borran teléfonos, correos, DNI y enlaces.</li>
+    </ul>
+
+    <h2>Qué no guardamos</h2>
+    <ul>
+      <li>Ni nombre, ni teléfono, ni correo, ni dirección IP, ni el modelo de tu móvil.</li>
+      <li>No usamos cookies, analítica ni píxeles de redes sociales. Las fuentes y las imágenes se sirven desde esta misma web.</li>
+      <li>En tu navegador solo queda el borrador mientras contestas y una marca de que ya has participado. Puedes borrarlos limpiando los datos del sitio.</li>
+    </ul>
+    <p>Como no guardamos datos que permitan identificar a nadie, la consulta no hace tratamiento de datos personales. Por eso no te pedimos consentimiento: no hay nada tuyo que consentir.</p>
+
+    <h2>Cómo se publica</h2>
+    <ul>
+      <li>Solo resultados agrupados. Ningún barrio, grupo o cruce se enseña si lo forman menos de 15 respuestas: se suma a «Otros».</li>
+      <li>Los textos libres se leen a mano antes de publicarse. Solo se citan los de quien lo ha permitido.</li>
+      <li>Las palabras de la primera pregunta solo aparecen si las han escrito al menos cinco personas.</li>
+    </ul>
+
+    <h2>Cómo se depuran las respuestas</h2>
+    <ul>
+      <li>Se descartan las respuestas de robots, detectadas con un campo invisible para las personas.</li>
+      <li>Las contestadas en menos de dos minutos se apartan de los resultados y se cuentan aparte.</li>
+      <li>Cada navegador puede contestar una vez. Se puede saltar con otro dispositivo o una ventana privada; por eso en el análisis se buscan ráfagas de respuestas idénticas.</li>
+    </ul>
+
+    <h2>Cómo se ajusta la muestra</h2>
+    <p>En el informe final las respuestas se ponderan por edad, sexo y zona con el padrón del INE, para que cada grupo pese lo que pesa en la ciudad. La pregunta de izquierda y derecha usa la misma escala que el CIS, y sirve para comprobar si quien ha contestado está escorado hacia un lado. Los resultados de esta página, mientras la consulta está abierta, son sin ponderar.</p>
+
+    <h2>Quién la promueve</h2>
+    <p data-promotor>[pendiente]</p>
+    <p>Contacto: <a data-correo href="#">[correo]</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <div class="env">
+    <span>Ceuta decide · escucha ciudadana. Promueve: <span data-promotor>[pendiente]</span>.</span>
+    <span>Consulta anónima: no recogemos datos personales. <a href="#metodo">Cómo funciona y qué guardamos</a> · <a href="#resultados">Resultados</a></span>
+  </div>
+</footer>
+</body>
+</html>
