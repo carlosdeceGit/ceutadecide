@@ -7,22 +7,19 @@
 
 export const VERSION = "v2";
 
-// PROVISIONAL · sustituir por la lista cerrada, con su distrito censal.
+// Lista facilitada por Ceuta Decide (octubre 2026).
 export const BARRIOS = [
-  "Centro", "Recinto Sur", "San Amaro", "Sarchal", "Monte Hacho",
-  "Hadú", "Los Rosales", "Juan XXIII", "Villajovita", "Manzanera",
-  "Los Almendros", "Erquicia", "Bermudo Soriano", "Polígono Virgen de África",
-  "Puertas del Campo", "José Zurrón", "Miramar", "Varela",
-  "Juan Carlos I", "Loma Colmenar", "Príncipe Alfonso", "Príncipe Felipe",
-  "Arcos Quebrados", "Terrones", "Tarajal", "El Morro", "García Aldave",
-  "Benítez", "Playa Benítez", "Benzú"
+  "Almadraba", "Barriada de la Libertad", "Benzú", "Centro", "El Morro", "El Sardinero",
+  "Erquicia", "Hadú", "Juan Carlos I", "La Viña", "Loma Colmenar", "Miramar Bajo", "Otero",
+  "Parques de Ceuta", "Príncipe Alfonso", "Príncipe Felipe", "Puertas del Campo", "Recinto Sur",
+  "Rosales", "San Amaro", "San José", "Terrones", "Villajovita", "Zurrón"
 ];
 export const BARRIO_OTRO = "Otro";
 export const BARRIO_NS = "Prefiero no decirlo";
 
 // Preguntas cuyo contenido es texto libre: se guardan aparte, sin unirse
 // al resto de respuestas de la persona.
-export const TEXTOS = ["p1", "p6", "p12", "p13", "p19", "p24", "p27", "p33"];
+export const TEXTOS = ["p1", "p6", "p12", "p13", "p12s", "p13s", "p19", "p24", "p27", "p33"];
 
 const ACTORES = ["Gobierno de España", "Delegación del Gobierno", "Ciudad Autónoma",
   "Unión Europea", "Marruecos", "Redes de tráfico de personas"];
@@ -71,28 +68,33 @@ export const BLOQUES = [
         filas: ACTORES, columnas: ["Ninguna", "Poca", "Bastante", "Mucha", "No lo sé"] },
       { id: "p10", tipo: "matriz", obl: true, texto: "Durante estos meses, ¿ha respondido cada uno?",
         filas: QUIEN_RESPONDE, columnas: ["Sí", "A medias", "No", "No lo sé"] },
-      { id: "p11", tipo: "multiple", obl: true, max: 2,
-        texto: "¿Por qué crees que esto no se ha resuelto todavía?", ayuda: "Hasta dos.",
+      { id: "p11", tipo: "unica", obl: true,
+        texto: "¿Crees que esta situación está completamente resuelta a día de hoy?", opciones: ["Sí", "No"] },
+      { id: "p11b", tipo: "multiple", obl: true, max: 2, si: { p: "p11", v: "No" },
+        texto: "¿Por qué crees que no se ha resuelto todavía?", ayuda: "Hasta dos.",
         opciones: ["Falta de voluntad política", "Falta de medios",
           "Falta de coordinación entre administraciones", "Ceuta pesa poco en Madrid",
-          "La relación con Marruecos", "Es un problema difícil de resolver",
-          "Creo que sí se está resolviendo", "No lo sé"] }
+          "La relación con Marruecos", "Es un problema difícil de resolver", "No lo sé"] }
     ]
   },
   {
-    id: "b3", titulo: "Qué hay que hacer ya",
+    id: "b3", titulo: "Lo que toca ahora",
     preguntas: [
-      { id: "p12", tipo: "abierto", obl: true, max: 140,
+      { id: "p12", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "No" },
         texto: "¿Qué es lo primero que debería hacer el Gobierno de España por Ceuta?" },
-      { id: "p13", tipo: "abierto", obl: true, max: 140,
+      { id: "p13", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "No" },
         texto: "¿Y lo primero que debería hacer el Gobierno de la Ciudad?" },
+      { id: "p12s", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "Sí" },
+        texto: "¿Qué cosas clave crees que ha hecho el Gobierno de España para resolverla?" },
+      { id: "p13s", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "Sí" },
+        texto: "¿Y la Ciudad, qué cosas clave crees que ha hecho para resolverla?" },
       { id: "p14", tipo: "multiple", obl: true, max: 2,
         texto: "Ceuta tiene nuevo delegado del Gobierno. ¿Qué debería hacer primero?", ayuda: "Hasta dos.",
         opciones: ["Venir a los barrios a escuchar", "Reconocer públicamente lo que ha pasado este verano",
           "Presentar un calendario con fechas y recursos", "Coordinarse con la Ciudad",
           "Informar cada mes de lo cumplido", "Atender a comercios y familias afectadas", "Otra cosa"] },
       { id: "p15", tipo: "escala10", obl: true, desde: 0,
-        texto: "¿Cuánta confianza tienes en que el nuevo delegado cambie las cosas?",
+        texto: "¿Cuánta confianza tienes en que el nuevo delegado mejore las cosas?",
         extremos: ["Ninguna", "Total"] }
     ]
   },
@@ -147,12 +149,14 @@ export const BLOQUES = [
   },
   {
     id: "b6", titulo: "Sobre ti",
-    intro: "Cuatro datos para comparar tus respuestas con las de toda la ciudad. No sirven para saber quién eres.",
+    intro: "Unos pocos datos para comparar tus respuestas con las de toda la ciudad. No sirven para saber quién eres.",
     preguntas: [
       { id: "p29", tipo: "unica", obl: true, texto: "¿En qué tramo de edad estás?",
         opciones: ["18 a 29", "30 a 44", "45 a 64", "65 o más", "Prefiero no decirlo"] },
       { id: "p30", tipo: "unica", obl: true, texto: "Sexo",
         opciones: ["Mujer", "Hombre", "Prefiero no decirlo"] },
+      { id: "p30b", tipo: "unica", obl: true, texto: "¿Naciste en Ceuta?",
+        opciones: ["Sí", "No", "Prefiero no decirlo"] },
       { id: "p31", tipo: "unica", obl: true, texto: "¿Cuál es tu situación?",
         opciones: ["Trabajo por cuenta ajena", "Autónomo o tengo un negocio", "Estudio",
           "Estoy en paro", "Jubilado o jubilada", "Me dedico a los cuidados", "Otra"] },
@@ -184,7 +188,13 @@ export function limpiar(txt, max) {
   return t.slice(0, max);
 }
 
-const visible = (p, r) => !p.si || (typeof r[p.si] === "string" && r[p.si].trim() !== "");
+export const visible = (p, r) => {
+  if (!p.si) return true;
+  if (typeof p.si === "object") return r[p.si.p] === p.si.v;
+  return typeof r[p.si] === "string" && r[p.si].trim() !== "";
+};
+// Preguntas que ve quien va por el recorrido más largo (para anunciarlas).
+export const N_PREGUNTAS = PREGUNTAS.filter(p => !(p.si && typeof p.si === "object" && p.si.v === "Sí")).length;
 
 // Valida las respuestas de un bloque (o de todos). Devuelve {id: mensaje}.
 export function errores(preguntas, r) {

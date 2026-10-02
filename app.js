@@ -1,11 +1,11 @@
-import { BLOQUES, PREGUNTAS, POR_ID, errores, opcionesBarrio, BARRIOS } from "./preguntas.js";
+import { BLOQUES, PREGUNTAS, POR_ID, errores, opcionesBarrio, BARRIOS, visible, N_PREGUNTAS } from "./preguntas.js";
 import { agregar, MINIMO } from "./agregar.js";
 
 /* ==================================================================
    CONFIG · lo que hay que rellenar antes de abrir
    ================================================================== */
 const CONFIG = {
-  promotor: "[pendiente: entidad que promueve la consulta]",
+  promotor: "Ceuta Decide, un grupo de ciudadanos de Ceuta",
   correo: "",                 // correo de contacto
   canalWhatsApp: "",          // enlace del canal de WhatsApp de avisos
   objetivo: 2000,
@@ -24,8 +24,13 @@ const leer = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { 
 const PREVIEW = !!document.querySelector('meta[name="cd-preview"]');
 const URL_PUBLICA = PREVIEW ? "https://ceutadecide.es" : location.origin;
 let estado = leer("cd_borrador") || { r: {}, paso: 0, inicio: null };
-let numerada = 0;
-const NUM = Object.fromEntries(PREGUNTAS.map(p => [p.id, ++numerada]));
+// Numeración según el recorrido de cada persona (las ramas no cuentan si no se ven).
+const rama = p => p.si && typeof p.si === "object";
+function numero(id) {
+  let n = 0;
+  for (const p of PREGUNTAS) { if (!rama(p) || visible(p, estado.r)) n++; if (p.id === id) return n; }
+  return n;
+}
 
 /* ---------------- arranque ---------------- */
 function textosFijos() {
@@ -34,9 +39,9 @@ function textosFijos() {
     if (CONFIG.correo) { e.textContent = CONFIG.correo; e.href = "mailto:" + CONFIG.correo; }
     else e.textContent = "[pendiente]";
   });
-  $$("[data-n-preguntas]").forEach(e => { e.textContent = PREGUNTAS.length; });
+  $$("[data-n-preguntas]").forEach(e => { e.textContent = N_PREGUNTAS; });
   $$("[data-enlace]").forEach(e => { e.textContent = URL_PUBLICA.replace(/^https?:\/\//, ""); });
-  const msg = `Ceuta decide. Una consulta anónima sobre cómo hemos pasado estos meses y lo que necesita cada barrio. Sin nombre ni teléfono, unos ${CONFIG.minutos} minutos: ${URL_PUBLICA}`;
+  const msg = `Descubramos entre todos cómo ayudar a Ceuta. Rellena la encuesta para conocer los problemas reales de nuestra ciudad. Es anónima y son unos ${CONFIG.minutos} minutos: ${URL_PUBLICA}`;
   $$("[data-wa]").forEach(a => { a.href = "https://wa.me/?text=" + encodeURIComponent(msg); });
   $$("[data-copiar]").forEach(b => b.addEventListener("click", () => {
     const avisar = t => { b.textContent = t; setTimeout(() => { b.textContent = "Copiar enlace"; }, 2200); };
@@ -97,7 +102,7 @@ function pintarPaso() {
     cont.innerHTML = `<div class="filtro">
       <h2 class="bloque-titulo">Antes de empezar</h2>
       <ul>
-        <li>Son ${PREGUNTAS.length} preguntas, unos ${CONFIG.minutos} minutos.</li>
+        <li>Son unas ${N_PREGUNTAS} preguntas, unos ${CONFIG.minutos} minutos.</li>
         <li>No te pedimos nombre, teléfono ni correo. No guardamos tu IP.</li>
         <li>Puedes dejarlo a medias y seguir luego desde este mismo móvil.</li>
       </ul>
@@ -121,7 +126,7 @@ function pintarPaso() {
 }
 
 function cab(p, comoLegend = true) {
-  const t = `<span class="num">${NUM[p.id]}.</span>${esc(p.texto)}${p.obl ? '<span class="obl" aria-hidden="true">*</span>' : ""}`;
+  const t = `<span class="num">${numero(p.id)}.</span>${esc(p.texto)}${p.obl ? '<span class="obl" aria-hidden="true">*</span>' : ""}`;
   const ay = p.ayuda ? `<span class="ayuda">${esc(p.ayuda)}</span>` : (!p.obl ? `<span class="ayuda">Opcional.</span>` : "");
   return comoLegend ? `<legend>${t}</legend>${ay}` : `<label class="enunciado" for="i-${p.id}">${t}</label>${ay}`;
 }
@@ -175,7 +180,7 @@ function conectar(p) {
     i.addEventListener("input", () => {
       estado.r[p.id] = i.value;
       const c = $(`#c-${p.id}`); if (c) c.textContent = `${i.value.length}/${p.max}`;
-      if (p.id === "p6") actualizarCondicionales();
+      actualizarCondicionales();
       cambiado();
     });
     return;
@@ -201,6 +206,7 @@ function conectar(p) {
       const arr = Array.isArray(estado.r[p.id]) ? [...estado.r[p.id]] : new Array(p.pares.length).fill(null);
       arr[i] = t.value; estado.r[p.id] = arr;
     }
+    actualizarCondicionales();
     cambiado();
   });
 }
@@ -208,10 +214,11 @@ function conectar(p) {
 function actualizarCondicionales() {
   PREGUNTAS.filter(p => p.si).forEach(p => {
     const caja = $(`#q-${p.id}`);
-    const ver = typeof estado.r[p.si] === "string" && estado.r[p.si].trim() !== "";
+    const ver = visible(p, estado.r);
     if (caja) caja.hidden = !ver;
-    if (!ver) delete estado.r[p.id];
+    if (!ver && !rama(p)) delete estado.r[p.id];
   });
+  $$("#paso .pregunta").forEach(c => { const n = $(".num", c); if (n) n.textContent = numero(c.id.slice(2)) + "."; });
 }
 
 function mostrarError(id, msg) {
@@ -233,6 +240,7 @@ function limpiarRespuestas() {
     if (p.tipo === "disyuntivas" && Array.isArray(r[p.id]) && r[p.id].some(x => x == null)) r[p.id] = r[p.id].map(x => x ?? "");
     if ((p.tipo === "abierto" || p.tipo === "palabra") && typeof r[p.id] === "string" && !r[p.id].trim()) delete r[p.id];
     if (p.tipo === "barrio" && r[p.id] === "") delete r[p.id];
+    if (!visible(p, r)) delete r[p.id];
   }
   return r;
 }
@@ -418,10 +426,11 @@ function pintarResultados(R, demo) {
     ${grafPregunta("p8")}
     ${grafMatriz("p9", ["Mucha", "Bastante"], "Porcentaje que le atribuye mucha o bastante responsabilidad")}
     ${grafMatriz("p10", ["No"], "Porcentaje que dice que no ha respondido")}
-    ${grafPregunta("p11", { ordenar: true, sub: "Porcentaje de personas que marcan cada opción (hasta dos)" })}
+    ${grafPregunta("p11")}
+    ${grafPregunta("p11b", { ordenar: true, sub: "Solo quienes creen que no está resuelta. Porcentaje que marca cada opción (hasta dos)" })}
   </div></section>`;
 
-  h += `<section class="res-bloque"><h2>Qué hay que hacer ya</h2><div class="res-grid">
+  h += `<section class="res-bloque"><h2>El nuevo delegado</h2><div class="res-grid">
     ${grafPregunta("p14", { ordenar: true, sub: "Porcentaje de personas que marcan cada opción (hasta dos)" })}${grafDiez("p15")}
   </div></section>`;
 
@@ -448,7 +457,7 @@ function pintarResultados(R, demo) {
   </div></section>`;
 
   h += `<section class="res-bloque"><h2>Quién ha contestado</h2><p class="nota">Sirve para comparar con el padrón y con el CIS. En el informe final se pondera por edad, sexo y zona.</p><div class="res-grid">
-    ${grafPregunta("p29")}${grafPregunta("p30")}${grafPregunta("p31", { ordenar: true })}${grafDiez("p32")}
+    ${grafPregunta("p29")}${grafPregunta("p30")}${grafPregunta("p30b")}${grafPregunta("p31", { ordenar: true })}${grafDiez("p32")}
   </div>`;
   if (R.porIdeologia?.length) {
     h += `<h3 style="margin-top:22px;font-size:19px">Lo mismo, visto desde cada lado</h3>` + tabla([
@@ -486,6 +495,7 @@ function filasDeEjemplo(n = 1400) {
       } else if (p.tipo === "matriz") f[p.id] = Object.fromEntries(p.filas.map(fl => [fl, azar(p.columnas)]));
       else if (p.tipo === "disyuntivas") f[p.id] = p.pares.map(par => par[Math.random() < .5 ? 0 : 1]);
     }
+    for (const p of PREGUNTAS) if (rama(p) && !visible(p, f)) delete f[p.id];
     filas.push(f);
   }
   const palabras = ["miedo", "incertidumbre", "abandono", "cansancio", "tensión", "rabia", "tristeza", "esperanza", "olvido", "caos"]

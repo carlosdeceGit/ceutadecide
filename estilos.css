@@ -73,9 +73,11 @@ p{margin:0}
 .pastilla{display:inline-block;background:var(--coral);color:#fff;font-weight:600;font-size:14.5px;
   padding:7px 18px;border-radius:999px;margin-bottom:20px}
 .pastilla.verde{background:var(--acento);color:var(--sobre-acento)}
-h1{font-size:clamp(36px,6.2vw,68px);font-weight:800;line-height:1.02;margin-bottom:18px}
+h1{font-size:clamp(34px,5.4vw,60px);font-weight:800;line-height:1.02;margin-bottom:18px}
 h1 em{font-style:normal;color:var(--acento)}
-.entradilla{font-size:clamp(17px,1.8vw,19px);color:var(--tinta-2);max-width:38ch}
+.entradilla{font-size:clamp(17px,1.8vw,19px);color:var(--tinta-2);max-width:46ch}
+.entradilla + .entradilla{margin-top:12px}
+.entradilla.fuerte{color:var(--tinta);font-weight:700}
 .tarjeta{margin-top:26px;background:var(--papel);border-radius:22px;padding:22px;box-shadow:var(--sombra);max-width:500px}
 .tarjeta label{display:block;font:800 12px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--acento);margin-bottom:12px}
 .campo{display:flex;gap:10px;flex-wrap:wrap}
