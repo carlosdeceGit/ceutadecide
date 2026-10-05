@@ -31,3 +31,9 @@ Consulta ciudadana anónima. Web estática + dos funciones de Vercel + Supabase.
 - [ ] Una respuesta de prueba enviada y borrada
 
 Vista de ejemplo de resultados con datos inventados: `/#resultados/ejemplo`
+
+## Despliegue actual (5 oct 2026)
+
+- Producción: https://ceutadecide.vercel.app (región cdg1, París).
+- Desplegado por API, sin GitHub. Imágenes, fuentes, `app.js` y `estilos.css` se sirven desde el bucket público `web` de Supabase a través de reescrituras de Vercel (el navegador nunca habla con Supabase).
+- Si se conecta el repo de GitHub, los archivos del repo tienen prioridad sobre las reescrituras. En ese caso hay que dar de alta las variables de entorno, porque `lib/db.js` del repo no lleva claves.
