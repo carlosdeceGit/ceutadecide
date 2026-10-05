@@ -260,3 +260,17 @@ tbody tr:hover{background:var(--menta)}
   .op.escala,.matriz-fila .op{font-size:13px;padding-inline:3px;hyphens:auto}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.antetitulo{font:800 13px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--acento);margin-bottom:12px}
+.citas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.citas .pastilla{margin:0}
+.pastilla.oscura{background:var(--tinta);color:var(--fondo)}
+.arranque{margin-top:26px;display:grid;gap:10px;justify-items:start}
+.btn.grande{font-size:19px;padding:18px 34px;min-height:58px}
+.arranque .aviso{margin:0}
+.inicio-consulta{background:var(--papel);border-radius:22px;padding:clamp(22px,4vw,34px);margin-top:8px}
+.inicio-consulta .lema{font:800 clamp(22px,3.4vw,30px)/1.15 var(--display);letter-spacing:-.03em;margin:4px 0 14px;text-wrap:balance}
+.inicio-consulta .lema em{font-style:normal;color:var(--acento)}
+.ficha{list-style:none;padding:0!important}
+.ficha li{padding:8px 0;border-bottom:1px solid var(--linea);margin:0!important}
+@media (max-width:520px){.arranque{justify-items:stretch}.citas .pastilla{font-size:13.5px;padding:6px 14px}}

@@ -40,6 +40,7 @@ function textosFijos() {
     else e.textContent = "[pendiente]";
   });
   $$("[data-n-preguntas]").forEach(e => { e.textContent = N_PREGUNTAS; });
+  $$("[data-minutos]").forEach(e => { e.textContent = CONFIG.minutos; });
   $$("[data-enlace]").forEach(e => { e.textContent = URL_PUBLICA.replace(/^https?:\/\//, ""); });
   const msg = `Descubramos entre todos cómo ayudar a Ceuta. Rellena la encuesta para conocer los problemas reales de nuestra ciudad. Es anónima y son unos ${CONFIG.minutos} minutos: ${URL_PUBLICA}`;
   $$("[data-wa]").forEach(a => { a.href = "https://wa.me/?text=" + encodeURIComponent(msg); });
@@ -52,12 +53,6 @@ function textosFijos() {
   $("#f-linea").textContent = `Objetivo: ${es(CONFIG.objetivo)} vecinos de Ceuta · unos ${CONFIG.minutos} minutos`;
 }
 
-$("#arranque").addEventListener("submit", e => {
-  e.preventDefault();
-  const v = $("#palabra").value.trim();
-  if (v) { estado.r.p1 = v; guardarBorrador(); }
-  location.hash = "#consulta";
-});
 
 /* ---------------- vistas ---------------- */
 function mostrar() {
@@ -99,10 +94,9 @@ function pintarPaso() {
 
   if (paso === 0) {
     $("#paso-de").textContent = "Antes de empezar";
-    cont.innerHTML = `<div class="filtro">
-      <h2 class="bloque-titulo">Antes de empezar</h2>
+    cont.innerHTML = `<div class="inicio-consulta filtro">
+      <p class="lema">Responder no te llevará más de ${CONFIG.minutos} minutos, <em>y con ello los políticos tendrán que trabajar en lo que necesitamos.</em></p>
       <ul>
-        <li>Son unas ${N_PREGUNTAS} preguntas, unos ${CONFIG.minutos} minutos.</li>
         <li>No te pedimos nombre, teléfono ni correo. No guardamos tu IP.</li>
         <li>Puedes dejarlo a medias y seguir luego desde este mismo móvil.</li>
       </ul>
@@ -111,7 +105,7 @@ function pintarPaso() {
       <p class="msg-error" id="filtro-error" hidden>Esta consulta es solo para mayores de edad que viven en Ceuta.</p>
     </div>`;
     $("#filtro").addEventListener("change", e => { estado.filtro = e.target.checked; guardarBorrador(); $("#filtro-error").hidden = true; });
-    $("#siguiente").textContent = "Empezar";
+    $("#siguiente").textContent = "Empezar la encuesta";
     return;
   }
 
@@ -389,6 +383,7 @@ const coma = (v, dec = 1) => v == null ? "–" : Number(v).toFixed(dec).replace(
 
 function pintarResultados(R, demo) {
   window.__res = R;
+  if (!demo) $$("[data-n-ficha]").forEach(e => { e.textContent = `${es(R.n)} respuestas válidas a ${new Date(R.actualizado).toLocaleDateString("es-ES")}`; });
   const cont = $("#res");
   const actualizado = new Date(R.actualizado).toLocaleString("es-ES", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
   $("#res-entradilla").textContent = R.modo === "completo"

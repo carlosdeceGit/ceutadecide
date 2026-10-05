@@ -6,7 +6,11 @@ import { rpc, configurada } from "../lib/db.js";
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ ok: false });
   if (!configurada()) return res.status(503).json({ ok: false, motivo: "sin-configurar" });
-  const modo = process.env.RESULTADOS === "completos" ? "completo" : "participacion";
+  // Ley electoral (art. 69 LOREG): nada de opinión en los cinco días previos a cada votación.
+  const VEDAS = [["2026-11-24", "2026-11-29"], ["2027-05-18", "2027-05-23"]];
+  const hoy = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
+  const enVeda = VEDAS.some(([a, b]) => hoy >= a && hoy <= b);
+  const modo = process.env.RESULTADOS === "completos" && !enVeda ? "completo" : "participacion";
   try {
     const d = await rpc("cd_datos");
     const palabras = modo === "completo" ? await rpc("cd_palabras") : [];
