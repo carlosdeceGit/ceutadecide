@@ -31,7 +31,6 @@
       <img class="oscuro" src="/img/marca-oscuro.webp" alt="" width="540" height="95">
     </a>
     <span class="hueco"></span>
-    <a class="enlace-cab" href="#resultados">Resultados</a>
     <a class="btn chico" href="#consulta" data-empezar>Participar</a>
   </div>
 </header>
@@ -116,7 +115,7 @@
       <p class="entradilla">Tu respuesta se ha guardado sin ningún dato tuyo. Los resultados se publican en esta misma web.</p>
       <div class="acciones">
         <a class="btn" data-wa href="#" target="_blank" rel="noopener">Pásalo por WhatsApp</a>
-        <a class="btn secundario" href="#resultados">Ver cómo va</a>
+        <a class="btn secundario" href="#metodo">Qué hacemos con tu respuesta</a>
       </div>
       <p class="aviso" id="canal-wrap" hidden>¿Quieres enterarte de los resultados y de las reuniones de barrio? <a id="canal" href="#" target="_blank" rel="noopener">Sigue el canal de WhatsApp</a>. Es aparte de la consulta: nadie ve tu número y no se une a tus respuestas.</p>
     </div>
@@ -131,6 +130,20 @@
       <p class="entradilla" id="res-entradilla">Cargando…</p>
     </div>
     <div id="res"></div>
+  </div>
+</section>
+
+<!-- ============================ ADMIN ============================ -->
+<section class="vista" id="vista-admin" data-vista="admin" hidden>
+  <div class="env estrecho">
+    <form class="filtro admin-acceso" id="admin-form" novalidate>
+      <h1 class="bloque-titulo">Acceso de administración</h1>
+      <p class="bloque-intro">Los resultados todavía no son públicos. Solo los ve el equipo de Ceuta Decide.</p>
+      <label class="etiqueta" for="admin-clave">Contraseña</label>
+      <input id="admin-clave" type="password" autocomplete="current-password" required>
+      <p class="msg-error" id="admin-error" hidden></p>
+      <button class="btn" type="submit">Entrar</button>
+    </form>
   </div>
 </section>
 
@@ -196,7 +209,7 @@
 <footer class="pie">
   <div class="env">
     <span>Ceuta decide · escucha ciudadana. Promueve: <span data-promotor>[pendiente]</span>.</span>
-    <span>Consulta anónima: no recogemos datos personales. <a href="#metodo">Cómo funciona y qué guardamos</a> · <a href="#resultados">Resultados</a></span>
+    <span>Consulta anónima: no recogemos datos personales. <a href="#metodo">Cómo funciona y qué guardamos</a></span>
   </div>
 </footer>
 </body>

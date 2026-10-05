@@ -61,10 +61,12 @@ function mostrar() {
   const h = location.hash.replace("#", "") || "inicio";
   let [vista, sub] = h.split("/");
   if (vista === "ejemplo") { vista = "resultados"; sub = "ejemplo"; }
-  const valida = ["inicio", "consulta", "gracias", "resultados", "metodo"].includes(vista) ? vista : "inicio";
+  if (vista === "admin" && sesionAdmin()) { vista = "resultados"; sub = "admin"; }
+  const valida = ["inicio", "consulta", "gracias", "resultados", "metodo", "admin"].includes(vista) ? vista : "inicio";
   $$(".vista").forEach(v => { v.hidden = v.dataset.vista !== valida; });
   if (valida === "consulta") pintarPaso();
-  if (valida === "resultados") cargarResultados(sub === "ejemplo" || PREVIEW);
+  if (valida === "resultados") cargarResultados(sub);
+  if (valida === "admin") setTimeout(() => $("#admin-clave")?.focus(), 50);
   if (h !== "inicio" || document.activeElement === document.body) window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", mostrar);
@@ -513,8 +515,71 @@ function filasDeEjemplo(n = 1400) {
   return { filas, palabras };
 }
 
-async function cargarResultados(demo) {
+/* ---------------- administración ---------------- */
+const sesionAdmin = () => { try { return sessionStorage.getItem("cd_admin"); } catch { return null; } };
+$("#admin-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const clave = $("#admin-clave").value, err = $("#admin-error");
+  err.hidden = true;
+  if (!clave) return;
+  if (!PREVIEW) {
+    const r = await fetch("/api/admin", { headers: { Authorization: "Bearer " + clave } }).catch(() => null);
+    if (!r || r.status === 401) { err.textContent = "Contraseña incorrecta."; err.hidden = false; return; }
+    if (!r.ok) { err.textContent = "El servidor no responde. Prueba en un momento."; err.hidden = false; return; }
+  }
+  try { sessionStorage.setItem("cd_admin", clave); } catch {}
+  $("#admin-clave").value = "";
+  location.hash = "#resultados/admin";
+});
+function salirAdmin() { try { sessionStorage.removeItem("cd_admin"); } catch {} location.hash = "#inicio"; }
+
+function pintarTextos(textos) {
+  const nombres = { p6: "Lo que has vivido", p12s: "Qué ha hecho el Gobierno de España", p13s: "Qué ha hecho la Ciudad",
+    g3: "Qué podría hacer el Gobierno de España por Ceuta", g4: "Qué podría hacer el Gobierno por España",
+    g6: "Qué podría hacer la Ciudad", p19: "Sitio del barrio que lleva años esperando", p24: "Lo mejor del barrio",
+    p27: "En qué es Ceuta mejor", p33: "Algo más" };
+  const grupos = Object.keys(nombres).filter(k => textos.some(t => t.pregunta === k));
+  const sec = document.createElement("section");
+  sec.className = "res-bloque";
+  sec.innerHTML = `<h2>Textos libres</h2><p class="nota">Solo para el equipo. No están unidos a ninguna otra respuesta. Antes de citar uno, comprueba que no identifica a nadie y que la persona lo permitió (solo «Lo que has vivido» pregunta permiso).</p>
+    <div class="filtro-textos">${grupos.map((g, i) => `<button type="button" data-g="${g}" aria-pressed="${i === 0}">${esc(nombres[g])} (${textos.filter(t => t.pregunta === g).length})</button>`).join("")}</div>
+    <div class="textos"></div>`;
+  const lista = $(".textos", sec);
+  const ver = g => {
+    $$("button", sec).forEach(b => b.setAttribute("aria-pressed", b.dataset.g === g));
+    lista.innerHTML = textos.filter(t => t.pregunta === g).map(t => `<div class="texto-item"><p>${esc(t.texto)}</p>
+      <span class="meta">${esc(t.dia)}${t.barrio ? " · " + esc(t.barrio) : ""}${t.pregunta === "p6" ? (t.citable ? " · se puede citar" : " · no citar") : ""}</span></div>`).join("") || `<p class="nota">Sin textos.</p>`;
+  };
+  $$("button", sec).forEach(b => b.addEventListener("click", () => ver(b.dataset.g)));
+  if (grupos.length) ver(grupos[0]); else lista.innerHTML = `<p class="nota">Todavía no hay textos.</p>`;
+  $("#res").appendChild(sec);
+}
+
+async function cargarResultados(sub) {
   const cont = $("#res");
+  const barraAdmin = () => {
+    const b = document.createElement("div"); b.className = "barra-admin";
+    b.innerHTML = `<span>Vista de administración · no es pública</span><button type="button">Cerrar sesión</button>`;
+    $("button", b).addEventListener("click", salirAdmin);
+    cont.prepend(b);
+  };
+  if (sub === "admin" && sesionAdmin()) {
+    if (PREVIEW) {
+      const { filas, palabras } = filasDeEjemplo();
+      const R = agregar(filas, { palabras, modo: "completo", excluidas: 37 });
+      pintarResultados(R, true); barraAdmin();
+      pintarTextos([{ pregunta: "p6", texto: "Ejemplo de texto libre.", citable: true, dia: "2026-10-05" }, { pregunta: "g6", texto: "Más limpieza en las barriadas.", dia: "2026-10-05" }]);
+      return;
+    }
+    cont.innerHTML = ""; $("#res-entradilla").textContent = "Cargando…";
+    const r = await fetch("/api/admin", { headers: { Authorization: "Bearer " + sesionAdmin() } }).catch(() => null);
+    if (!r || r.status === 401) { salirAdmin(); location.hash = "#admin"; return; }
+    if (!r.ok) { $("#res-entradilla").textContent = "No se han podido cargar los resultados."; return; }
+    const R = await r.json();
+    pintarResultados(R, false); barraAdmin(); pintarTextos(R.textos || []);
+    return;
+  }
+  const demo = sub === "ejemplo";
   if (demo) {
     const { filas, palabras } = filasDeEjemplo();
     pintarResultados(agregar(filas, { palabras, modo: "completo", excluidas: 37 }), true);
@@ -524,7 +589,13 @@ async function cargarResultados(demo) {
   try {
     const r = await fetch("/api/resultados");
     if (!r.ok) throw new Error();
-    pintarResultados(await r.json(), false);
+    const R = await r.json();
+    if (R.modo === "cerrado") {
+      $("#res-entradilla").textContent = "Los resultados se publicarán cuando cierre la encuesta, con su ficha técnica y el método.";
+      cont.innerHTML = R.n >= CONFIG.contadorDesde ? `<div class="cifras"><div class="cifra"><b>${es(R.n)}</b><span>personas han contestado ya</span></div></div>` : "";
+      return;
+    }
+    pintarResultados(R, false);
   } catch {
     $("#res-entradilla").textContent = "Todavía no hay resultados que enseñar.";
     cont.innerHTML = `<p class="vacio">La consulta aún no ha empezado a recibir respuestas, o no se han podido cargar. Vuelve en un rato.</p>`;

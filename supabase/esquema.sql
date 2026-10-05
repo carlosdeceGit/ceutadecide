@@ -76,3 +76,17 @@ end $$;
 revoke all on function public.cd_enviar, public.cd_datos, public.cd_palabras from public;
 grant execute on function public.cd_enviar, public.cd_datos, public.cd_palabras to anon;
 revoke all on function privado.clave_ok from public, anon, authenticated;
+
+-- Textos libres para el panel de administración (lectura y moderación).
+create or replace function public.cd_textos(p_clave text) returns jsonb
+language plpgsql stable security definer set search_path = '' as $$
+begin
+  if not privado.clave_ok(p_clave) then raise exception 'no autorizado'; end if;
+  return coalesce((
+    select jsonb_agg(jsonb_build_object('pregunta', pregunta, 'texto', texto, 'citable', citable,
+                     'barrio', barrio, 'dia', dia) order by dia desc, pregunta)
+    from privado.textos where pregunta <> 'p1'
+  ), '[]'::jsonb);
+end $$;
+revoke all on function public.cd_textos from public;
+grant execute on function public.cd_textos to anon;

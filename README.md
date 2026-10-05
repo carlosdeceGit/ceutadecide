@@ -10,7 +10,8 @@ Consulta ciudadana anónima. Web estática + dos funciones de Vercel + Supabase.
 | `preguntas.js` | El cuestionario v2 (33 preguntas). Lo usan la web y el servidor |
 | `agregar.js` | Cálculo de resultados públicos. Nunca enseña grupos de menos de 15 |
 | `api/enviar.js` | Recibe respuestas. No lee IP, cookies ni navegador |
-| `api/resultados.js` | Devuelve solo agregados |
+| `api/resultados.js` | Público: solo el número de participantes mientras `RESULTADOS` no sea `completos` |
+| `api/admin.js` | Panel de administración: resultados completos y textos libres, con contraseña |
 | `lib/db.js` | Conexión con Supabase desde el servidor |
 | `supabase/esquema.sql` | Tablas en esquema privado + tres funciones protegidas por clave |
 
@@ -19,7 +20,8 @@ Consulta ciudadana anónima. Web estática + dos funciones de Vercel + Supabase.
 - `SUPABASE_URL` · dirección del proyecto
 - `SUPABASE_KEY` · clave publicable
 - `CD_CLAVE` · clave secreta que también está en `privado.ajustes`
-- `RESULTADOS` · `completos` para publicar todo. Cualquier otro valor: solo participación
+- `ADMIN_CLAVE` · contraseña del panel de administración (`/#admin`)
+- `RESULTADOS` · `completos` para publicar todo. Cualquier otro valor: los resultados solo se ven en el panel
 
 ## Antes de abrir
 

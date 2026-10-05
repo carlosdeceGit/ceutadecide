@@ -274,3 +274,19 @@ tbody tr:hover{background:var(--menta)}
 .ficha{list-style:none;padding:0!important}
 .ficha li{padding:8px 0;border-bottom:1px solid var(--linea);margin:0!important}
 @media (max-width:520px){.arranque{justify-items:stretch}.citas .pastilla{font-size:13.5px;padding:6px 14px}}
+
+.admin-acceso{display:grid;gap:12px;margin-top:clamp(20px,5vw,50px)}
+.admin-acceso .bloque-titulo{font-size:clamp(26px,4vw,34px)}
+.etiqueta{font-weight:700;font-size:15px}
+.admin-acceso input{font:500 17px var(--texto);color:var(--tinta);background:var(--fondo);border:1.5px solid var(--linea);border-radius:14px;padding:13px 16px}
+.admin-acceso input:focus{border-color:var(--acento);outline:none}
+.admin-acceso .btn{justify-self:start}
+.barra-admin{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--tinta);color:var(--fondo);border-radius:14px;padding:10px 16px;margin-top:16px;font-size:14.5px;font-weight:600}
+.barra-admin button{font:600 14px var(--texto);background:transparent;color:inherit;border:1.5px solid currentColor;border-radius:999px;padding:6px 14px;cursor:pointer}
+.textos{display:grid;gap:10px;margin-top:14px}
+.texto-item{background:var(--papel);border-radius:14px;padding:14px 16px;display:grid;gap:6px}
+.texto-item .meta{font-size:13px;color:var(--tinta-2)}
+.texto-item p{white-space:pre-wrap;overflow-wrap:anywhere}
+.filtro-textos{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.filtro-textos button{font:600 13.5px var(--texto);background:var(--papel);color:var(--tinta);border:0;border-radius:999px;padding:7px 14px;cursor:pointer}
+.filtro-textos button[aria-pressed=true]{background:var(--acento);color:var(--sobre-acento)}

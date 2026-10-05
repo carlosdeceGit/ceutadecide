@@ -1,5 +1,5 @@
-// Resultados públicos. Solo agregados; nada por debajo del mínimo.
-// RESULTADOS=completos publica todo; cualquier otro valor, solo participación.
+// Resultados públicos. Mientras RESULTADOS no valga «completos», solo se
+// devuelve cuánta gente ha participado: las opiniones las ve el panel de admin.
 import { agregar } from "../agregar.js";
 import { rpc, configurada } from "../lib/db.js";
 
@@ -15,7 +15,8 @@ export default async function handler(req, res) {
     const d = await rpc("cd_datos");
     const palabras = modo === "completo" ? await rpc("cd_palabras") : [];
     const filas = (d.filas || []).filter(f => f._c !== "rapida").map(({ _c, ...f }) => f);
-    const out = agregar(filas, { palabras: palabras || [], modo, excluidas: (d.filas || []).length - filas.length });
+    let out = agregar(filas, { palabras: palabras || [], modo, excluidas: (d.filas || []).length - filas.length });
+    if (modo !== "completo") out = { n: out.n, modo: "cerrado", actualizado: out.actualizado };
     res.setHeader("Cache-Control", "public, s-maxage=120, stale-while-revalidate=600");
     return res.status(200).json(out);
   } catch {
