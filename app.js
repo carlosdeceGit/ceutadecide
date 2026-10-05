@@ -5,8 +5,9 @@ import { agregar, MINIMO } from "./agregar.js";
    CONFIG · lo que hay que rellenar antes de abrir
    ================================================================== */
 const CONFIG = {
-  promotor: "Ceuta Decide, un grupo de ciudadanos de Ceuta",
-  correo: "",                 // correo de contacto
+  promotor: "Por Ceuta (porceuta.es)",
+  promotorLargo: "Ceuta Decide es una iniciativa de Por Ceuta (porceuta.es), una iniciativa ciudadana independiente y sin adscripción política impulsada por Carlos Delgado, junto a Ceuta Nos Une y el Foro Ciudadano de Apoyo a Ceuta y Melilla.",
+  correo: "hola@porceuta.es",
   canalWhatsApp: "",          // enlace del canal de WhatsApp de avisos
   objetivo: 2000,
   contadorDesde: 500,         // el contador solo se enseña a partir de esta cifra
@@ -35,6 +36,7 @@ function numero(id) {
 /* ---------------- arranque ---------------- */
 function textosFijos() {
   $$("[data-promotor]").forEach(e => { e.textContent = CONFIG.promotor; });
+  $$("[data-promotor-largo]").forEach(e => { e.textContent = CONFIG.promotorLargo; });
   $$("[data-correo]").forEach(e => {
     if (CONFIG.correo) { e.textContent = CONFIG.correo; e.href = "mailto:" + CONFIG.correo; }
     else e.textContent = "[pendiente]";
