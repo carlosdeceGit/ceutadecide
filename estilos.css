@@ -290,3 +290,10 @@ tbody tr:hover{background:var(--menta)}
 .filtro-textos{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .filtro-textos button{font:600 13.5px var(--texto);background:var(--papel);color:var(--tinta);border:0;border-radius:999px;padding:7px 14px;cursor:pointer}
 .filtro-textos button[aria-pressed=true]{background:var(--acento);color:var(--sobre-acento)}
+
+.quienes{background:var(--papel);border-radius:26px;padding:clamp(22px,3vw,32px) clamp(22px,3vw,34px);margin-bottom:clamp(18px,3vw,28px)}
+.quienes h2{font-size:clamp(21px,2.6vw,26px);margin-bottom:14px}
+.quienes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.4vw,26px)}
+.quienes-grid p{font-size:16px;color:var(--tinta-2);min-width:0}
+.quienes-grid strong{color:var(--tinta)}
+@media (max-width:880px){.quienes-grid{grid-template-columns:1fr}}

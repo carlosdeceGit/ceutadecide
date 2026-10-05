@@ -38,23 +38,5 @@
         }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/img/:f",
-      "destination": "https://erzalqrqeigprnbslfka.supabase.co/storage/v1/object/public/web/img/:f"
-    },
-    {
-      "source": "/fonts/:f",
-      "destination": "https://erzalqrqeigprnbslfka.supabase.co/storage/v1/object/public/web/fonts/:f"
-    },
-    {
-      "source": "/app.js",
-      "destination": "https://erzalqrqeigprnbslfka.supabase.co/storage/v1/object/public/web/static/app.js"
-    },
-    {
-      "source": "/estilos.css",
-      "destination": "https://erzalqrqeigprnbslfka.supabase.co/storage/v1/object/public/web/static/estilos.css"
-    }
   ]
 }
