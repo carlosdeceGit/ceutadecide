@@ -10,7 +10,7 @@ const CONFIG = {
   canalWhatsApp: "",          // enlace del canal de WhatsApp de avisos
   objetivo: 2000,
   contadorDesde: 500,         // el contador solo se enseña a partir de esta cifra
-  minutos: 7
+  minutos: 8
 };
 /* ================================================================== */
 
@@ -351,7 +351,7 @@ function grafDiez(id) {
   const p = POR_ID[id], d = window.__res.preguntas[id];
   const max = Math.max(1, ...d.d.map(x => x.n));
   const validas = d.base - (d.ns || 0);
-  return graf(p.texto, `${es(validas)} respuestas · media ${String(d.media ?? "–").replace(".", ",")}${d.ns ? ` · ${es(d.ns)} prefieren no contestar` : ""}`,
+  return graf(p.texto, `${es(validas)} respuestas · media ${String(d.media ?? "–").replace(".", ",")}${d.ns ? ` · ${es(d.ns)} eligen «${esc(p.ns)}»` : ""}`,
     `<div class="histo">${d.d.map(x => `<div class="col" title="${x.op}: ${es(x.n)} (${pcTxt(x.n, validas)})"><span>${pc(x.n, validas)}</span><i style="height:${x.n / max * 100}%"></i></div>`).join("")}</div>
      <div class="histo-pie"><span>${p.desde} · ${esc(p.extremos[0])}</span><span>%</span><span>${esc(p.extremos[1])} · 10</span></div>`);
 }
@@ -434,6 +434,15 @@ function pintarResultados(R, demo) {
     ${grafPregunta("p14", { ordenar: true, sub: "Porcentaje de personas que marcan cada opción (hasta dos)" })}${grafDiez("p15")}
   </div></section>`;
 
+  const nota = id => coma(window.__res.preguntas[id]?.media);
+  h += `<section class="res-bloque"><h2>Las notas de los gobiernos</h2><p class="nota">Media de 0 a 10, sin contar «No lo sé».</p>
+    <div class="cifras">
+      <div class="cifra"><b>${nota("g1")}</b><span>Gobierno de España, por lo hecho en Ceuta</span></div>
+      <div class="cifra"><b>${nota("g2")}</b><span>Gobierno de España, por lo hecho en España</span></div>
+      <div class="cifra"><b>${nota("g5")}</b><span>Gobierno de la Ciudad, por lo hecho en Ceuta</span></div>
+    </div>
+    <div class="res-grid">${grafDiez("g1")}${grafDiez("g2")}${grafDiez("g5")}</div></section>`;
+
   h += `<section class="res-bloque"><h2>Los barrios</h2><div class="res-grid">${partBarrios}${grafServicios()}
     ${grafPregunta("p18", { ordenar: true, sub: "Porcentaje de personas que marcan cada opción (hasta tres)" })}${grafPregunta("p20")}${grafPregunta("p21")}${grafPregunta("p22")}${grafPregunta("p23")}
   </div>`;
@@ -447,6 +456,7 @@ function pintarResultados(R, demo) {
       { t: "Servicios (1-5)", v: f => f.servicios, f: f => coma(f.servicios) },
       { t: "Ha recibido menos", v: f => f.recibidoMenos, f: f => coma(f.recibidoMenos, 0) + " %" },
       { t: "Ha pensado irse", v: f => f.piensaIrse, f: f => coma(f.piensaIrse, 0) + " %" },
+      { t: "Nota a la Ciudad", v: f => f.notaCiudad, f: f => coma(f.notaCiudad) },
       { t: "Lo más urgente", v: f => f.urgencia }
     ], R.porBarrio) + `<p class="nota">Pulsa una columna para ordenar. Solo barrios con ${MINIMO} respuestas o más.</p>`;
   }
@@ -465,6 +475,9 @@ function pintarResultados(R, demo) {
       { t: "Respuestas", v: f => f.n, f: f => es(f.n) },
       { t: "Afectación (1-5)", v: f => f.afectacion, f: f => coma(f.afectacion) },
       { t: "Confianza en el delegado (0-10)", v: f => f.confianza, f: f => coma(f.confianza) },
+      { t: "Nota Gob. España en Ceuta", v: f => f.notaEspanaCeuta, f: f => coma(f.notaEspanaCeuta) },
+      { t: "Nota Gob. España en España", v: f => f.notaEspana, f: f => coma(f.notaEspana) },
+      { t: "Nota a la Ciudad", v: f => f.notaCiudad, f: f => coma(f.notaCiudad) },
       { t: "Ha pensado irse", v: f => f.piensaIrse, f: f => coma(f.piensaIrse, 0) + " %" }
     ], R.porIdeologia);
   }

@@ -19,7 +19,7 @@ export const BARRIO_NS = "Prefiero no decirlo";
 
 // Preguntas cuyo contenido es texto libre: se guardan aparte, sin unirse
 // al resto de respuestas de la persona.
-export const TEXTOS = ["p1", "p6", "p12", "p13", "p12s", "p13s", "p19", "p24", "p27", "p33"];
+export const TEXTOS = ["p1", "p6", "p12s", "p13s", "g3", "g4", "g6", "p19", "p24", "p27", "p33"];
 
 const ACTORES = ["Gobierno de España", "Delegación del Gobierno", "Ciudad Autónoma",
   "Unión Europea", "Marruecos", "Redes de tráfico de personas"];
@@ -80,10 +80,6 @@ export const BLOQUES = [
   {
     id: "b3", titulo: "Lo que toca ahora",
     preguntas: [
-      { id: "p12", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "No" },
-        texto: "¿Qué es lo primero que debería hacer el Gobierno de España por Ceuta?" },
-      { id: "p13", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "No" },
-        texto: "¿Y lo primero que debería hacer el Gobierno de la Ciudad?" },
       { id: "p12s", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "Sí" },
         texto: "¿Qué cosas clave crees que ha hecho el Gobierno de España para resolverla?" },
       { id: "p13s", tipo: "abierto", obl: true, max: 140, si: { p: "p11", v: "Sí" },
@@ -96,6 +92,27 @@ export const BLOQUES = [
       { id: "p15", tipo: "escala10", obl: true, desde: 0,
         texto: "¿Cuánta confianza tienes en que el nuevo delegado mejore las cosas?",
         extremos: ["Ninguna", "Total"] }
+    ]
+  },
+  {
+    id: "b3g", titulo: "Los gobiernos",
+    intro: "Notas de 0 a 10, como en el colegio. El 5 es el aprobado.",
+    preguntas: [
+      { id: "g1", tipo: "escala10", obl: true, desde: 0, ns: "No lo sé",
+        texto: "¿Qué nota le pones a lo que ha hecho el Gobierno de España actual en Ceuta?",
+        extremos: ["Muy mal", "Muy bien"] },
+      { id: "g2", tipo: "escala10", obl: true, desde: 0, ns: "No lo sé",
+        texto: "¿Y a lo que ha hecho en el conjunto de España?",
+        extremos: ["Muy mal", "Muy bien"] },
+      { id: "g3", tipo: "abierto", obl: true, max: 140,
+        texto: "¿Qué podría hacer el Gobierno de España para mejorar Ceuta?" },
+      { id: "g4", tipo: "abierto", obl: false, max: 140,
+        texto: "¿Y qué podría hacer para mejorar España?" },
+      { id: "g5", tipo: "escala10", obl: true, desde: 0, ns: "No lo sé",
+        texto: "¿Qué nota le pones a lo que ha hecho el Gobierno de la Ciudad en Ceuta?",
+        extremos: ["Muy mal", "Muy bien"] },
+      { id: "g6", tipo: "abierto", obl: true, max: 140,
+        texto: "¿Qué podría hacer el Gobierno de la Ciudad para mejorar Ceuta?" }
     ]
   },
   {

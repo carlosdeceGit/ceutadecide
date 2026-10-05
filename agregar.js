@@ -71,6 +71,7 @@ export function agregar(filas, { palabras = [], modo = "completo", excluidas = 0
       servicios: media(fs.map(servicioMedio).filter(x => x != null)),
       recibidoMenos: pct(fs.filter(f => ["Mucho menos", "Algo menos"].includes(f.p20)).length, nb),
       piensaIrse: pct(fs.filter(f => f.p4 && f.p4 !== "No").length, nb),
+      notaCiudad: media(fs.map(f => f.g5).filter(Number.isInteger)),
       urgencia: top ? top[0] : null
     };
   });
@@ -86,6 +87,9 @@ export function agregar(filas, { palabras = [], modo = "completo", excluidas = 0
     return {
       grupo, n: ng,
       confianza: media(fs.map(f => f.p15).filter(Number.isInteger)),
+      notaEspanaCeuta: media(fs.map(f => f.g1).filter(Number.isInteger)),
+      notaEspana: media(fs.map(f => f.g2).filter(Number.isInteger)),
+      notaCiudad: media(fs.map(f => f.g5).filter(Number.isInteger)),
       piensaIrse: pct(fs.filter(f => f.p4 && f.p4 !== "No").length, ng),
       afectacion: media(fs.map(f => POR_ID.p2.opciones.indexOf(f.p2) + 1).filter(x => x > 0))
     };
